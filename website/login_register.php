@@ -14,7 +14,7 @@
         } else {
             $conn->query("INSERT INTO users  (name, email, password) VALUES ('$name', '$email', '$password')");
             // Corrigido: o valor da sessão deve ser 'register' (sem o ponto).
-            $_SESSION['active_form'] = 'register';
+            $_SESSION['active_form'] = 'login';
         }
 
         header("Location: index.php");
@@ -31,9 +31,8 @@ if (isset($_POST['login'])) {
         if(password_verify($password, $user['password'])) {
             $_SESSION['name'] = $user['name'];
             $_SESSION['email'] = $user['email'];
-
-            header("Location: user_page.html");
-            exit();
+            header("Location: user_page.php");
+           exit();
         }
     }
     $_SESSION['login_error'] = 'email ou senha incorreta.';
@@ -42,3 +41,5 @@ if (isset($_POST['login'])) {
     header("Location: index.php");
     exit();
 }
+
+?>
