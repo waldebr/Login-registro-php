@@ -22,21 +22,34 @@
     }
 
 if (isset($_POST['login'])) {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-        $result = $conn->query("SELECT * FROM users WHERE email = '$email'");
+    // Use prepared statements para evitar SQL Injection (boa prática!)
+    $stmt = $conn->prepare("SELECT name, email, password, cargo FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
         if(password_verify($password, $user['password'])) {
             $_SESSION['name'] = $user['name'];
             $_SESSION['email'] = $user['email'];
-            header("Location: user_page.php");
-           exit();
+            $_SESSION['cargo'] = $user['cargo']; // Armazena o cargo na sessão
+
+            // Redireciona com base no cargo
+            if ($user['cargo'] == 'professor') {
+                header("Location: professor_page.php");
+                exit();
+            } else {
+                header("Location: user_page.php");
+                exit();
+            }
         }
     }
+    
     $_SESSION['login_error'] = 'email ou senha incorreta.';
-    // Corrigido: o valor da sessão deve ser 'login' (sem o ponto).
     $_SESSION['active_form'] = 'login';
     header("Location: index.php");
     exit();

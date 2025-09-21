@@ -6,8 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="container">
-        Teste aluno
-    </div>
+    <h2>teste professor page</h2>
 </body>
 </html>
